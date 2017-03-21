@@ -7,6 +7,7 @@ package it.polito.tdp.libretto;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.libretto.model.Esame;
 import it.polito.tdp.libretto.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,12 +45,46 @@ public class LibrettoController {
 
     @FXML
     void handleCerca(ActionEvent event) {
+    	
+    	String codice = txtCodice.getText();
+    	if(codice.length() < 5){
+    		txtMessage.appendText("Attenzione: codice non valido\n");
+    		return;
+    	}
+    	
+    	Esame e = model.trovaEsame(codice);
+    	
+    	if(e==null)
+    		txtMessage.appendText("Esame non trovato\n");
+    	else{
+    		txtMessage.appendText("Esame trovato e visualizzato nel campi di testo.\n");
+    		txtCodice.setText(e.getCodice());
+    		txtTitolo.setText(e.getTitolo());
+    		txtDocente.setText(e.getDocente());
+    	}
 
     }
 
     @FXML
     void handleInserisci(ActionEvent event) {
-
+    	
+    	String codice = txtCodice.getText();
+    	String titolo = txtTitolo.getText();
+    	String docente = txtDocente.getText();
+    	
+    	if(codice.length() < 5 || titolo.length()==0 || docente.length() == 0){
+    		txtMessage.appendText("Dati esame insufficienti.\n");
+    		return;
+    	}
+    	
+    	Esame e = new Esame (codice,titolo,docente);
+    	
+    	boolean result = model.addEsame(e);
+    	
+    	if(result)
+    		txtMessage.appendText("Esame aggiunto correttamente.\n");
+    	else
+    		txtMessage.appendText("Esame NON aggiunto correttamente (codice duplicato!).\n");
     }
 
     /**
